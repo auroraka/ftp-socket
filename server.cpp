@@ -1,3 +1,4 @@
+#include "debug.h"
 #include <iostream>
 #include <cstdio>
 #include <cstdlib>
@@ -17,46 +18,53 @@ using namespace std;
 const int big_size = 1024;
 const int small_size = 50;
 
-int main(int argc, char *argvp[]) {
-	if (argc != 4) {
-		printf("usage...");
+string HELP="\
+FTP Serer								\n\
+Usage: ./server [-s]					\n\
+PARAMS:									\n\
+	-s		DEFAULT=8123,port of socket	\n\
+	--help	get help list				\n\
+";
+
+int PORT=8123;
+
+
+void showHelp(){
+	cout<<HELP;	
+}
+
+void parseArgv(int now,int argc,char *argv[]){
+	if (now>=argc) return;
+	switch (argv[now]){
+		case "-s":
+			PORT=atoi(argv[now+1]);
+			now+=2;
+			break;
+		default:
+			printf("unknown command %s\n",argv[now]);
+			exit(1);
+			break;
 	}
-	char buf[big_size] = {0}, file[small_size] = {0}, host_name[small_size] = {0}
+	parseArgv(now,argc,argv);
+}
 
-	                     int target, ret;
+int main(int argc, char *argv[]) {
+	if (argc==2 && strcmp(argv[1],"--help")==0){
+		showHelp();
+		exit(0);
+	}
+	if (argc<=1){
+		showHelp();
+		exit(0);
+	}
+	parseArgv(1,argc,argv);
 
-	register int bytes, sockfd;
-	struct sockaddr_in sin;
-	strcpy(file, argv[3]);
-	system(command);
-	sprintf(host_name, "%s", "Server");
 
-	if (sockfd == socket(AF_INET, SOCK_STREAM, 0) < 0) {
-		fprintf(stderr, "file to initial socket!!!\n");
+	if ((serverSocket = socket(AF_INET, SOCK_STREAM, 0)) == -1)
+	{
+		cout << "Fail to create server socket" << endl;
 		exit(2);
 	}
-	sin.sin_family = AF_INET;
-	sin.sin_port = htons(atoi(argv[2]));
-
-	inet_pton = htons(atoi(argv[2]));
-
-	if ((ret = connect(socketfd, (struct sockaddr*)&sin, sizeof(sin) )) == -1) {
-		fprintf(stderr, "can't connect server!!!\n");
-	}
-	exit(3);
-	memset(buf, 0, big_size);
-	write(sockfd, file, sizeof(file));
-	sprintf(buf, "%s_%s", "receive", file);
-
-	if ( (target = open(file, O_WRONLY | O_CREAT | O_TRUNC, 0644)) < 0 ) {
-		perror("can't open file!!");
-		exit(4);
-	}
-	memset(buf,0,big_size);
-	while (bytes = read(sockfd,buf,sizeof(buf))>0){
-		
-	}
-
-
-	return 0；
+	
+	return 0;
 }

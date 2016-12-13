@@ -24,14 +24,13 @@ struct sockaddr_in serverAddr; // 指向包含有本机IP地址及端口号等�
 
 int main(int argc , char** argv)
 {
-	cout<<"hello\n";
+	printf("hello\n");
 	if ((serverSocket = socket(AF_INET, SOCK_STREAM, 0)) == -1)
 	{
 		cout << "Fail to create server socket" << endl;
 		exit(0);
 	}
-	cout<<"created";
-	exit(0);
+	printf("created\n");
 	memset(&serverAddr , 0 , sizeof(sockaddr_in));
 	serverAddr.sin_family = AF_INET; //IPV4
 	serverAddr.sin_addr.s_addr = htonl(INADDR_ANY); //IP地址设置成INADDR_ANY,让系统自动获取本机的IP地
@@ -43,24 +42,31 @@ int main(int argc , char** argv)
 		exit(0);
 	}
 	
+	printf("aaa\n");
 	if (listen(serverSocket, BACKLOG) == -1) 
 	{
 		cout << "Fail to listen" << endl;
 		exit(0);
 	}
+	printf("bbb\n");
 	if((commandSocket = accept(serverSocket, (struct sockaddr*)NULL, NULL)) == -1)
 	{
 		cout << "Fail to accept command socket" << endl;
 		exit(0);
 	}
+		printf("ccc\n");
+
+exit(0);
 	if((dataSocket = accept(serverSocket, (struct sockaddr*)NULL, NULL)) == -1)
 	{
 		cout << "Fail to accept command socket" << endl;
 		exit(0);
 	}
-	
+		printf("ddd\n");
+
 	char pathBuf[MAXLINE];
 	cout << "Connect successfully. Waiting for client command" << endl;
+	exit(0);
 	path = string(getcwd(pathBuf, sizeof(pathBuf)));
 	cout << "now path is " << path << endl;
 	while(1)
