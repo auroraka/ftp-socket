@@ -87,6 +87,7 @@ void * thread_do(void * arg) {
     string cwd = "/";
     DataType datatype = TYPE_ASCII;
     ModeType modetype = MODE_STREAM;
+    StructureType strutype = STRUCTURE_FILE;
     int datasock = -1;
 
     send_message(sockfd, 220, "Connect success, Welcome to use");
@@ -128,7 +129,7 @@ void * thread_do(void * arg) {
                     continue;
                 } else if (strcmp(token, "I") == 0) {
                     datatype = TYPE_IMAGE;
-                    send_message(sockfd, 200, "Type set to Binary.");
+                    send_message(sockfd, 504, "Type of Binary not complete.");
                     continue;
                 }
                 send_message(sockfd, 504, "Unsupport type.");
@@ -140,11 +141,27 @@ void * thread_do(void * arg) {
                     continue;
                 } else if (strcmp(token, "B") == 0) {
                     modetype = MODE_BLOCK;
-                    send_message(sockfd, 200, "Mode set to Block.");
+                    send_message(sockfd, 504, "Mode of Block not complete.");
                     continue;
                 } else if (strcmp(token, "C") == 0) {
                     modetype = MODE_COMPRESS;
-                    send_message(sockfd, 200, "Mode set to Compress.");
+                    send_message(sockfd, 504, "Mode of Compress not complete.");
+                    continue;
+                }
+                send_message(sockfd, 504, "Unsupport type.");
+            } else if (strcmp(token, "STRU") == 0) {
+                token = strtok(NULL, " \r\n");
+                if (strcmp(token, "F") == 0) {
+                    strutype = STRUCTURE_FILE;
+                    send_message(sockfd, 200, "Structure set to File.");
+                    continue;
+                } else if (strcmp(token, "R") == 0) {
+                    strutype = STRUCTURE_RECORD;
+                    send_message(sockfd, 504, "Structure of Record not complete.");
+                    continue;
+                } else if (strcmp(token, "P") == 0) {
+                    strutype = STRUCTURE_PAGE;
+                    send_message(sockfd, 504, "Structure of Page not complete.");
                     continue;
                 }
                 send_message(sockfd, 504, "Unsupport type.");
@@ -176,11 +193,8 @@ void * thread_do(void * arg) {
                 storeFile(cwd + token, _tmp);
             } else if (strcmp(token, "ALLO") == 0) {
                 send_message(sockfd, 202, "No storage allocation necessary.");
-            } else if (strcmp(token, "") == 0) {
-            } else if (strcmp(token, "") == 0) {
-            } else if (strcmp(token, "") == 0) {
-            } else if (strcmp(token, "") == 0) {
-            } else if (strcmp(token, "") == 0) {
+            } else if (strcmp(token, "NOOP") == 0) {
+                send_message(sockfd, 200, "Noop command.");
             } else {
                 send_message(sockfd, 500, "Unknown or not finished command.");
             }

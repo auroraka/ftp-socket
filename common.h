@@ -24,6 +24,7 @@ using namespace std;
 #define BUF_SIZE 256
 enum DataType {TYPE_ASCII, TYPE_IMAGE};
 enum ModeType {MODE_STREAM, MODE_BLOCK, MODE_COMPRESS};
+enum StructureType {STRUCTURE_FILE, STRUCTURE_RECORD, STRUCTURE_PAGE};
 typedef std::string char_buf;
 
 // ------------ Params -------------
