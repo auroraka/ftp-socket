@@ -1,3 +1,5 @@
 server
 client
 .DS_Store
+serverdata/**
+clientdata/**
