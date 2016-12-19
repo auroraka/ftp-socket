@@ -5,7 +5,27 @@ using namespace std;
 
 const string ROOT_DIR = "./serverdata/";
 
-const string HELP_CLIENT = "Usage: sudo ./server <port=21>";
+const string HELP_SERVER = "Usage: sudo ./server <port=21>";
+
+static string HELP_MESSAGE = "\n\
+NAME\n\
+    Auroraka's simple FTP\n\
+COMMAND LIST\n\
+    USER username\n\
+    PASS password\n\
+    QUIT\n\
+    PASV\n\
+    PWD\n\
+    TYPE [A/I]\n\
+    MODE [S/B/C]\n\
+    STRU [F/R/P]\n\
+    NLST\n\
+    LIST\n\
+    RETR pathfile\n\
+    CWD path\n\
+    STOR pathfile\n\
+    NOOP\n\
+";
 
 static int AUTHORIZED = 0;
 
@@ -42,7 +62,7 @@ int openPasvSocket(int sockfd) {
 
     //选择一个未占用的端口绑定
     getsockname(sockfd, (struct sockaddr*)&localaddr, &localaddrlen);
-    char_buf ret_str = inet_ntoa(localaddr.sin_addr);
+    string ret_str = inet_ntoa(localaddr.sin_addr);
     for (int i = 0 ; i < ret_str.length() ; i += 1)
         if (ret_str[i] == '.') ret_str[i] = ',';
     dataserv_addr.sin_family = AF_INET;
@@ -60,7 +80,7 @@ int openPasvSocket(int sockfd) {
     //监听该端口
     getsockname(dataserve_sock, (struct sockaddr *)&dataserv_addr, &datacli_addr_len);
     unsigned int dataserv_port = ntohs(dataserv_addr.sin_port);
-    Info((char_buf("PASV socket port: ") +
+    Info((string("PASV socket port: ") +
           std::to_string(dataserv_port)).c_str());
     ret_str += ",";
     ret_str += std::to_string(dataserv_port >> 8) + ",";
@@ -94,15 +114,17 @@ void * thread_do(void * arg) {
     while (1) {
         buf = readLine(sockfd);
         if (buf.length() == 0) {
-            Info("Read error. exit.");
-            break;
+            Info("Empty command.");
+            continue;
         }
         char * buf_str = new char[buf.length() + 1];
         strcpy(buf_str, buf.c_str());
         char * token = strtok(buf_str, " \r\n");
 
-        Receive(token);
-        if (strcmp(token, "USER") == 0) {
+        Receive(buf);
+        if (strcmp(token, "HELP") == 0) {
+            send_message(sockfd, 214, HELP_MESSAGE);
+        } else if (strcmp(token, "USER") == 0) {
             username = strtok(NULL, " \r\n");
             send_message(sockfd, 331, "Username ok, need password");
 
@@ -189,7 +211,7 @@ void * thread_do(void * arg) {
             } else if (strcmp(token, "STOR") == 0) {
                 token = strtok(NULL, " \r\n");
                 string _tmp;
-                read_data(sockfd, datasock, _tmp);
+                receive_data(sockfd, datasock, _tmp);
                 storeFile(cwd + token, _tmp);
             } else if (strcmp(token, "ALLO") == 0) {
                 send_message(sockfd, 202, "No storage allocation necessary.");

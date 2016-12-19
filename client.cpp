@@ -5,7 +5,7 @@
 const string ROOT_DIR="./clientdata/";
 
 
-std::string HELP_CLIENT = "Usage: sudo ./client <addr=127.0.0.1> <port=21>";
+string HELP_CLIENT = "Usage: sudo ./client <addr=127.0.0.1> <port=21>";
 
 char MSG[100];
 
@@ -19,11 +19,11 @@ string getReply(int sockfd, string msg) {
 
 int connectPASV(int sockfd) {
     Info("Connecting PASV...");
-    char_buf tmp("PASV");
+    string tmp("PASV");
     tmp = getReply(sockfd, tmp);
     assert(strncmp(tmp.c_str(), "227", 3) == 0);
     tmp = tmp.substr(tmp.find('(') + 1);
-    char_buf _addr;
+    string _addr;
     for (int i = 0, dot_count = 0; i < tmp.length() ; i += 1) {
         if (tmp[i] == ',') {
             if (dot_count == 3) break;
@@ -69,7 +69,7 @@ int main(int argc, char *argv[]) {
         exit(1);
     }
 
-    char_buf tmp = readLine(sockfd);
+    string tmp = readLine(sockfd);
     std::cout << tmp << std::endl;
     int datasock = -1;
 
@@ -81,7 +81,7 @@ int main(int argc, char *argv[]) {
         string reply = getReply(sockfd, cmd);
 
         if (strncmp("125", reply.c_str(), 3) == 0) {
-            char_buf filecontent;
+            string filecontent;
             if(strncmp("STOR", cmd.c_str(), 4) == 0){
                 tmp = cmd.substr(cmd.find(' ') + 1);
                 assert(readFile(tmp, filecontent) >= 0);
@@ -90,11 +90,11 @@ int main(int argc, char *argv[]) {
             }
             if(strncmp("RETR", cmd.c_str(), 4) == 0){
                 tmp = cmd.substr(cmd.find(' ') + 1);
-                read_data(datasock, filecontent);
+                receive_data(datasock, filecontent);
                 assert(storeFile(tmp, filecontent) >= 0);
             }
             if(strncmp("LIST", cmd.c_str(), 4) == 0){
-                read_data(datasock, filecontent);
+                receive_data(datasock, filecontent);
                 std::cout << filecontent << std::endl;
             }
             datasock = -1;

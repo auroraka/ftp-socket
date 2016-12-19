@@ -25,7 +25,6 @@ using namespace std;
 enum DataType {TYPE_ASCII, TYPE_IMAGE};
 enum ModeType {MODE_STREAM, MODE_BLOCK, MODE_COMPRESS};
 enum StructureType {STRUCTURE_FILE, STRUCTURE_RECORD, STRUCTURE_PAGE};
-typedef std::string char_buf;
 
 // ------------ Params -------------
 static int PORT = 21;
@@ -119,7 +118,7 @@ void send_data(int sockfd, int &datasock,
     send_message(sockfd, 226, "Transfer complete.");
 }
 
-void read_data(int sockfd, int &datasock, string & content) {
+void receive_data(int sockfd, int &datasock, string & content) {
     content = "";
     if (datasock < 0) {
         send_message(sockfd, 150, "File status okay. About to open data connection.");
@@ -137,7 +136,7 @@ void read_data(int sockfd, int &datasock, string & content) {
     send_message(sockfd, 226, "Transfer complete.");
 }
 
-void read_data(int &datasock, char_buf & content) {
+void receive_data(int &datasock, string & content) {
     content = "";
     char _tmp[BUF_SIZE];
     while (1) {
