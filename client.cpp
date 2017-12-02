@@ -1,6 +1,8 @@
+#define CLIENT
 #include "common.h"
 #include "debug.h"
 #include "tools.h"
+
 
 const string ROOT_DIR="./clientdata/";
 

@@ -1,3 +1,4 @@
+#define SERVER
 #include "common.h"
 #include "debug.h"
 #include "tools.h"

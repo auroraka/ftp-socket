@@ -35,13 +35,19 @@ extern const string ROOT_DIR;
 
 
 void Info(string msg) {
+    #ifdef SERVER
     puts(("[info] " + msg).c_str());
+    #endif
 }
 void Debug(string msg) {
+    #ifdef SERVER
     puts(("[debug] " + msg).c_str());
+    #endif
 }
 void Receive(string msg) {
+    #ifdef SERVER
     puts(("[receive] " + msg).c_str());
+    #endif
 }
 void Error(string msg) {
     puts(("[ERROR] " + msg).c_str());
